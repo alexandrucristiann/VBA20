@@ -47,7 +47,7 @@ Private Sub Columns_Change()
     Columns.BackColor = vbWhite
     ColumnsLabel.ForeColor = vbBlack
     If Columns.Value = "" Or _
-      Not base.ValidColumnsName(Columns.Value, ColumnCount.Value) Then
+      Not ValidColumnsName(Columns.Value, ColumnCount.Value) Then
         Columns.BackColor = vbRed
         ColumnsLabel.ForeColor = vbRed
     End If
@@ -71,6 +71,12 @@ Private Sub Create_Click()
     ColumnsLabel.ForeColor = vbBlack
 End Sub
 
+Private Sub CreateTableFrame_Click()
+
+End Sub
+
+' On every change in the TableName field
+' check if we are dealing with valid charachters or not
 Private Sub TableName_Change()
     TableNameLabel.ForeColor = vbBlack
     TableName.BackColor = vbWhite
@@ -80,7 +86,6 @@ Private Sub TableName_Change()
         TableNameLabel.ForeColor = vbRed
         TableName.BackColor = vbRed
     End If
-
 End Sub
 
 Private Sub UserForm_Initialize()

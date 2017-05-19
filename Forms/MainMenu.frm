@@ -14,6 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub CancelMenu_Click()
+    ' exit the meniu unloading it
     Unload Me
 End Sub
 
@@ -21,4 +22,11 @@ Private Sub CreateTable_Click()
     ' load in memory the create table window and show it'
     CreateTableWindow.Show
 End Sub
+
+Private Sub DeleteTable_Click()
+    DeleteTableWindow.Show
+End Sub
+
+
+
 
