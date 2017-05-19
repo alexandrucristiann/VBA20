@@ -27,7 +27,7 @@ Private Sub ColumnCount_Change()
 
     ' we should also not change the state of the spin
     ' if the value is not numeric or is not in this interval
-    ' [base.MIN_COLUMNS, base.MAX_COLUMNS]
+    ' [CoulmnCountSpin.Max, CoulmnCountSpin.Min]
     If Not IsNumeric(ColumnCount.Value) Or _
         (ColumnCount.Value > CoulmnCountSpin.Max) Or _
         (ColumnCount.Value < CoulmnCountSpin.Min) Then
@@ -44,11 +44,12 @@ Private Sub ColumnCount_Change()
 End Sub
 
 Private Sub Columns_Change()
-    Columns.BackColor = vbWhite
+    columns.BackColor = vbWhite
     ColumnsLabel.ForeColor = vbBlack
-    If Columns.Value = "" Or _
-      Not ValidColumnsName(Columns.Value, ColumnCount.Value) Then
-        Columns.BackColor = vbRed
+    Dim limit As Integer
+    limit = CInt(ColumnCount.Value)
+    If Not validateColumns(columns.Value, limit) Then
+        columns.BackColor = vbRed
         ColumnsLabel.ForeColor = vbRed
     End If
 End Sub
@@ -60,15 +61,51 @@ Private Sub CoulmnCountSpin_Change()
 End Sub
 
 
-' Creating a table with a name, the number of columns
-' specified and their columns
+' Create a new table in our database
+' In our case a table is just a new sheet
 Private Sub Create_Click()
+    ' define here the default state
     TableNameLabel.ForeColor = vbBlack
     TableName.BackColor = vbWhite
     ColumnCountLabel.ForeColor = vbBlack
     ColumnCount.BackColor = vbWhite
-    Columns.BackColor = vbWhite
+    columns.BackColor = vbWhite
     ColumnsLabel.ForeColor = vbBlack
+    
+    ' check all fields from the frame before everything else(bae)
+    '
+    ' table name check
+    If TableName.Value = "" Or _
+    IsNumeric(TableName.Value) Then
+        TableNameLabel.ForeColor = vbRed
+        TableName.BackColor = vbRed
+        errorOut ("Invalid table name")
+        Exit Sub
+    End If
+    
+    'column count check
+     If Not IsNumeric(ColumnCount.Value) Or _
+        (ColumnCount.Value > CoulmnCountSpin.Max) Or _
+        (ColumnCount.Value < CoulmnCountSpin.Min) Then
+        ColumnCount.BackColor = vbRed
+        ColumnCountLabel.ForeColor = vbRed
+        errorOut ("Invalid column count, count must be in [1,200]")
+        Exit Sub
+    End If
+    
+    'columns check
+    Dim limit As Integer
+    limit = CInt(ColumnCount.Value)
+    If Not validateColumns(columns.Value, limit) Then
+        columns.BackColor = vbRed
+        ColumnsLabel.ForeColor = vbRed
+        errorOut ("Invalid column names,length or found duplicates")
+        Exit Sub
+    End If
+    
+    'check if the table with the name passed already exists
+    
+    
 End Sub
 
 Private Sub CreateTableFrame_Click()
