@@ -7,3 +7,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
+
+Private Sub MainSQL_Click()
+    ' load main menu into memory and pop up the frame '
+    MainMenu.Show
+End Sub
