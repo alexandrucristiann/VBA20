@@ -22,9 +22,3 @@ Private Sub CreateTable_Click()
     CreateTableWindow.Show
 End Sub
 
-Private Sub Frame1_Click()
-End Sub
-
-Private Sub MenuFrame_Click()
-
-End Sub
