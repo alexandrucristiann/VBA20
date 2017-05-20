@@ -71,7 +71,7 @@ End Sub
 ' @name - name of the table
 '
 ' If the @name is empty this will ne no-op.
-Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef Columns() As String)
+Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef columnsNames() As String)
     If name = "" Or n = 0 Then
         Exit Sub
     End If
@@ -83,9 +83,14 @@ Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef Columns()
         ws.name = name
     End With
     
-    ws.Select
-    Debug.Print ws
-    ' TODO(hoenir) add the columns as well
+    Sheets(name).Select
+
+    Dim i As Integer
+    For i = 0 To n
+    ' TODO(hoenir) Fix this.
+        Cells(0, i).Select
+        ActiveCell.Value = columnsNames(0)
+    Next i
 End Sub
 
 ' deleteTable

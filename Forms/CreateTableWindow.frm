@@ -29,8 +29,8 @@ Private Sub ColumnCount_Change()
     ' if the value is not numeric or is not in this interval
     ' [CoulmnCountSpin.Max, CoulmnCountSpin.Min]
     If Not IsNumeric(ColumnCount.Value) Or _
-        (ColumnCount.Value > CoulmnCountSpin.Max) Or _
-        (ColumnCount.Value < CoulmnCountSpin.Min) Then
+        (ColumnCount.Value > ColumnCountSpin.Max) Or _
+        (ColumnCount.Value < ColumnCountSpin.Min) Then
         ColumnCount.BackColor = vbRed
         ColumnCountLabel.ForeColor = vbRed
         Exit Sub
@@ -40,8 +40,9 @@ Private Sub ColumnCount_Change()
     ' if the user wants to change the number of columns
     ' manually we need to update also the ColumnCountSpin
     ' value as well
-    CoulmnCountSpin.Value = ColumnCount.Value
+    ColumnCountSpin.Value = ColumnCount.Value
 End Sub
+
 
 Private Sub Columns_Change()
     Columns.BackColor = vbWhite
@@ -54,10 +55,10 @@ Private Sub Columns_Change()
     End If
 End Sub
 
-Private Sub CoulmnCountSpin_Change()
+Private Sub ColumnCountSpin_Change()
     ' when we increase or decrease the value
     ' update it in the field form
-    ColumnCount.Value = CoulmnCountSpin.Value
+    ColumnCount.Value = ColumnCountSpin.Value
 End Sub
 
 
@@ -85,8 +86,8 @@ Private Sub Create_Click()
     
     'column count check
      If Not IsNumeric(ColumnCount.Value) Or _
-        (ColumnCount.Value > CoulmnCountSpin.Max) Or _
-        (ColumnCount.Value < CoulmnCountSpin.Min) Then
+        (ColumnCount.Value > ColumnCountSpin.Max) Or _
+        (ColumnCount.Value < ColumnCountSpin.Min) Then
         ColumnCount.BackColor = vbRed
         ColumnCountLabel.ForeColor = vbRed
         errorOut ("Invalid column count, count must be in [1,200]")
@@ -141,5 +142,5 @@ Private Sub UserForm_Initialize()
     ' when we open the create table form this initial state
     ' render the current value from the ColumnCountSpin
     ' into ColumnCount form field
-    ColumnCount.Value = CoulmnCountSpin.Value
+    ColumnCount.Value = ColumnCountSpin.Value
 End Sub
