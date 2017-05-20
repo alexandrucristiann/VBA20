@@ -22,7 +22,27 @@ Private Sub Back_Click()
 End Sub
 
 Private Sub Delete_Click()
-
+    TableNameLabel.ForeColor = vbBlack
+    TableName.BackColor = vbWhite
+    
+    If TableName.Value = "" Or _
+    IsNumeric(TableName.Value) Then
+        TableNameLabel.ForeColor = vbRed
+        TableName.BackColor = vbRed
+        Exit Sub
+    End If
+    
+    Dim err As Boolean
+    err = DeleteTable(TableName.Value)
+    If err = False Then
+        TableNameLabel.ForeColor = vbRed
+        TableName.BackColor = vbRed
+            errorOut ("Cannot delete table, table does not exist")
+        Exit Sub
+    End If
+    
+    Me.Hide
+    Unload Me
 End Sub
 
 Private Sub TableName_Change()

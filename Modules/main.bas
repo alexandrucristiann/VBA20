@@ -71,7 +71,7 @@ End Sub
 ' @name - name of the table
 '
 ' If the @name is empty this will ne no-op.
-Public Sub createTable(ByVal name As String, ByVal n As Integer, ByRef Columns() As String)
+Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef Columns() As String)
     If name = "" Or n = 0 Then
         Exit Sub
     End If
@@ -94,7 +94,7 @@ End Sub
 ' If the @name is empty this will be no-op
 ' If the table(aka sheet) is found it will delete it and return True
 ' If the table is not found it will return False
-Public Function deleteTable(ByVal name As String) As Boolean
+Public Function DeleteTable(ByVal name As String) As Boolean
     If name = "" Then
         Exit Function
     End If
@@ -118,7 +118,7 @@ Public Function deleteTable(ByVal name As String) As Boolean
         Application.DisplayAlerts = True
     End If
     
-    deleteTable = found
+    DeleteTable = found
 End Function
 
 

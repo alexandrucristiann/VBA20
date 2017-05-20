@@ -116,7 +116,7 @@ Private Sub Create_Click()
     ' create the table with the given columns
     Dim arr() As String
     arr = Split(Columns.Value, ",", limit)
-    createTable TableName.Value, limit, arr
+    CreateTable TableName.Value, limit, arr
     
 End Sub
 
