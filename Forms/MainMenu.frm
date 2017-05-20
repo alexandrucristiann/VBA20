@@ -27,9 +27,16 @@ Private Sub DeleteTable_Click()
     DeleteTableWindow.Show
 End Sub
 
+Private Sub InsertTable_Click()
+    InsertTableWindow.Show
+End Sub
 
+Private Sub QueriesTable_Click()
+    QueriesTableWindow.Show
+End Sub
 
 
 Private Sub MenuFrame_Click()
 
 End Sub
+
