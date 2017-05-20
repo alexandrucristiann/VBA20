@@ -10,17 +10,17 @@ End Sub
 ' @limit - the numeber of comma separated strings
 '
 ' If the specified format is invalid this will return False
-Public Function validateColumns(ByVal columns As String, ByVal limit As Byte) As Boolean
+Public Function validateColumns(ByVal Columns As String, ByVal limit As Byte) As Boolean
     Dim arr() As String
     Dim size As Byte
     validateColumns = True
     
-    If columns = "" Or limit = 0 Then
+    If Columns = "" Or limit = 0 Then
         validateColumns = False
         Exit Function
     End If
     
-    arr = Split(columns, ",", limit)
+    arr = Split(Columns, ",", limit)
     size = UBound(arr) - LBound(arr) + 1 ' compute the size of the array
     
     If size <> limit Or size = 0 Then
@@ -52,7 +52,7 @@ Public Function validateColumns(ByVal columns As String, ByVal limit As Byte) As
     
 End Function
 
-' error
+' errorOut
 
 ' @message - the error message
 '
@@ -66,6 +66,60 @@ Public Sub errorOut(ByVal message As String)
     MsgBox message, vbExclamation, "Application Error"
 End Sub
 
+
+' createTable
+' @name - name of the table
+'
+' If the @name is empty this will ne no-op.
+Public Sub createTable(ByVal name As String, ByVal n As Integer, ByRef Columns() As String)
+    If name = "" Or n = 0 Then
+        Exit Sub
+    End If
+    
+    Dim ws As Worksheet
+    With ThisWorkbook
+        ' insert the new worksheet at the end of the worksheet list
+        Set ws = .Sheets.Add(After:=.Sheets(.Sheets.Count))
+        ws.name = name
+    End With
+    
+    ws.Select
+    Debug.Print ws
+    ' TODO(hoenir) add the columns as well
+End Sub
+
+' deleteTable
+' @name - name of the table
+'
+' If the @name is empty this will be no-op
+' If the table(aka sheet) is found it will delete it and return True
+' If the table is not found it will return False
+Public Function deleteTable(ByVal name As String) As Boolean
+    If name = "" Then
+        Exit Function
+    End If
+    
+    Dim i As Integer
+    Dim found As Boolean
+    
+    found = False
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If ActiveWorkbook.Worksheets(i).name = name Then
+            found = True
+            Exit For
+        End If
+    Next i
+    
+    
+    If found = True Then
+        ' delete Wroksheet without displaying messages
+        Application.DisplayAlerts = False
+        Worksheets(name).Delete
+        Application.DisplayAlerts = True
+    End If
+    
+    deleteTable = found
+End Function
 
 
 

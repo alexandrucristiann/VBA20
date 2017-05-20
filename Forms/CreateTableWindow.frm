@@ -44,12 +44,12 @@ Private Sub ColumnCount_Change()
 End Sub
 
 Private Sub Columns_Change()
-    columns.BackColor = vbWhite
+    Columns.BackColor = vbWhite
     ColumnsLabel.ForeColor = vbBlack
     Dim limit As Integer
     limit = CInt(ColumnCount.Value)
-    If Not validateColumns(columns.Value, limit) Then
-        columns.BackColor = vbRed
+    If Not validateColumns(Columns.Value, limit) Then
+        Columns.BackColor = vbRed
         ColumnsLabel.ForeColor = vbRed
     End If
 End Sub
@@ -69,7 +69,7 @@ Private Sub Create_Click()
     TableName.BackColor = vbWhite
     ColumnCountLabel.ForeColor = vbBlack
     ColumnCount.BackColor = vbWhite
-    columns.BackColor = vbWhite
+    Columns.BackColor = vbWhite
     ColumnsLabel.ForeColor = vbBlack
     
     ' check all fields from the frame before everything else(bae)
@@ -96,15 +96,27 @@ Private Sub Create_Click()
     'columns check
     Dim limit As Integer
     limit = CInt(ColumnCount.Value)
-    If Not validateColumns(columns.Value, limit) Then
-        columns.BackColor = vbRed
+    If Not validateColumns(Columns.Value, limit) Then
+        Columns.BackColor = vbRed
         ColumnsLabel.ForeColor = vbRed
         errorOut ("Invalid column names,length or found duplicates")
         Exit Sub
     End If
     
     'check if the table with the name passed already exists
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If TableName.Value = ActiveWorkbook.Worksheets(i).name Then
+            TableNameLabel.ForeColor = vbRed
+            TableName.BackColor = vbRed
+            errorOut ("Table is already created")
+            Exit Sub
+        End If
+    Next i
     
+    ' create the table with the given columns
+    Dim arr() As String
+    arr = Split(Columns.Value, ",", limit)
+    createTable TableName.Value, limit, arr
     
 End Sub
 
