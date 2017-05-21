@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} InsertTableWindow 
    Caption         =   "Insert Table"
-   ClientHeight    =   5715
+   ClientHeight    =   5550
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   14070
+   ClientWidth     =   9480
    OleObjectBlob   =   "InsertTableWindow.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -78,10 +78,19 @@ Private Sub Insert_Click()
     
 End Sub
 
+
 Private Sub ValueCountSpin_Change()
     ValueCount.Value = ValueCountSpin.Value
 End Sub
 
-Private Sub Values_Change()
+Private Sub TableInsertName_Change()
+    TableInsertName.FontSize = 15
+End Sub
 
+Private Sub ValueCount_Change()
+    ValueCount.FontSize = 15
+End Sub
+
+Private Sub Values_Change()
+    Values.FontSize = 15
 End Sub
