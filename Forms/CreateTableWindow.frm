@@ -36,7 +36,6 @@ Private Sub ColumnCount_Change()
         Exit Sub
     End If
     
-    
     ' if the user wants to change the number of columns
     ' manually we need to update also the ColumnCountSpin
     ' value as well
@@ -121,9 +120,6 @@ Private Sub Create_Click()
     
 End Sub
 
-Private Sub CreateTableFrame_Click()
-
-End Sub
 
 ' On every change in the TableName field
 ' check if we are dealing with valid charachters or not

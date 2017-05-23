@@ -21,29 +21,24 @@ Private Sub Back_Click()
     Unload Me
 End Sub
 
+
 Private Sub Delete_Click()
-    TableNameLabel.ForeColor = vbBlack
-    TableName.BackColor = vbWhite
-    
-    If TableName.Value = "" Or _
-    IsNumeric(TableName.Value) Then
-        TableNameLabel.ForeColor = vbRed
-        TableName.BackColor = vbRed
+    If Me.ComboBoxName.Value = "" Then
+        errorOut ("No table present in dba")
         Exit Sub
     End If
     
     Dim err As Boolean
-    err = DeleteTable(TableName.Value)
+    err = DeleteTable(Me.ComboBoxName.Value)
     If err = False Then
-        TableNameLabel.ForeColor = vbRed
-        TableName.BackColor = vbRed
-            errorOut ("Cannot delete table, table does not exist")
+        errorOut ("Cannot delete table, table does not exist")
         Exit Sub
     End If
     
     Me.Hide
     Unload Me
 End Sub
+
 
 Private Sub TableName_Change()
     ' On every change in the TableName field
@@ -56,4 +51,17 @@ Private Sub TableName_Change()
         TableNameLabel.ForeColor = vbRed
         TableName.BackColor = vbRed
     End If
+End Sub
+
+
+
+Private Sub UserForm_Initialize()
+    For i = Me.ComboBoxName.ListCount - 1 To 0 Step -1
+        Me.ComboBoxName.RemoveItem i
+    Next i
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If ActiveWorkbook.Worksheets(i).name <> "dba_start" Then
+            Me.ComboBoxName.AddItem ActiveWorkbook.Worksheets(i).name
+        End If
+    Next i
 End Sub
