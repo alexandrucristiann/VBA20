@@ -222,7 +222,7 @@ Public Function InsertTable(ByVal TableName As String, ByVal list As String) As 
     Dim size As Integer
     
     ' split and get the array size
-    arr = Split(list, ",", expectedSize)
+    arr = Split(list, ",")
     size = ArraySize(arr)
     
     ' check if the number expected is the same with the list one
