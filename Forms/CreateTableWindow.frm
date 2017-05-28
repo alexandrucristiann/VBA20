@@ -81,40 +81,43 @@ Private Sub Create_Click()
         End If
     Next i
     
-    Dim i As Integer
-    ' create table
-    ' insertion table logic
-    '
-    ' we need first to retain somewhere all types of the columns
-    '
-    Dim currentSheet As Worksheet
-    Dim j As Integer
-    For i = 1 To ActiveWorkbook.Worksheets.Count
-        If "dba_start" = ActiveWorkbook.Worksheets(i).name Then
-            Set currentSheet = ActiveWorkbook.Worksheets(i)
-                
-            Dim emptyRow As Long
-            emptyRow = currentSheet.Cells(currentSheet.Rows.Count, "A").End(xlUp).Row + 1
-                
-            If currentSheet.Cells(1, "A").Value = "" Then
-                emptyRow = 1
-            End If
-                
-            Dim emptyCol As Long
-            For j = 0 To size - 1
-                currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
-            Next j
+    ' append all column names and their types
+    Dim columnTypes() As String
+    Dim columnNames() As String
+    Dim ncolumns As Long
+    ncolumns = 0
+    ReDim Preserve columnTypes(ncolumns)
+
+    For i = 0 To Columns.ListCount - 1
+        ReDim Preserve columnTypes(0 To ncolumns)
+        ReDim Preserve columnNames(0 To ncolumns)
+        If Columns.Column(0, i) = "" Then
+            errorOut ("column does not have type")
+            Exit Sub
         End If
+        columnTypes(ncolumns) = Columns.Column(1, i)
+        columnNames(ncolumns) = Columns.Column(0, i)
+        ncolumns = ncolumns + 1
     Next i
     
-    'CreateTable TableName.Value, limit, arr
+    Dim dba_start As Worksheet
+    Set dba_start = ActiveWorkbook.Worksheets("dba_start")
+    
+    Dim emptyRow As Long
+    emptyRow = dba_start.Cells(dba_start.Rows.Count, "A").End(xlUp).Row + 1
+    If dba_start.Cells(1, "A").Value = "" Then
+        emptyRow = 1
+    End If
+                
+    dba_start.Cells(emptyRow, 1).Value = TableName.Value
+    For i = 1 To ncolumns
+        dba_start.Cells(emptyRow, i + 1).Value = columnTypes(i - 1)
+    Next i
+    
+    CreateTable TableName.Value, columnNames
 End Sub
 
 
-
-Private Sub CreateTableFrame_Click()
-
-End Sub
 
 ' On every change in the TableName field
 ' check if we are dealing with valid charachters or not

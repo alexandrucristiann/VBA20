@@ -4,7 +4,6 @@ Option Explicit
 Public Sub main()
 End Sub
 
-
 ' validateColumns
 '
 ' @columns - list of comma separated strings
@@ -72,8 +71,8 @@ End Sub
 ' @name - name of the table
 '
 ' If the @name is empty this will ne no-op.
-Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef columnNames() As String)
-    If name = "" Or n = 0 Then
+Public Sub CreateTable(ByVal name As String, ByRef columnNames() As String)
+    If name = "" Then
         Exit Sub
     End If
     
@@ -85,6 +84,8 @@ Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef columnNam
     End With
     
     Dim i As Integer
+    Dim n As Integer
+    n = ArraySize(columnNames)
     For i = 1 To n
         With Cells(1, i)
             .Value = columnNames(i - 1)
@@ -93,7 +94,6 @@ Public Sub CreateTable(ByVal name As String, ByVal n As Integer, ByRef columnNam
             .Interior.Color = RGB(188, 188, 188)
         End With
     Next i
-    
 End Sub
 
 ' DeleteTable
