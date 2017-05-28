@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} QueriesTableWindow 
    Caption         =   "QueriesTable"
-   ClientHeight    =   5790
+   ClientHeight    =   8565
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   8445
+   ClientWidth     =   12510
    OleObjectBlob   =   "QueriesTableWindow.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -20,14 +20,36 @@ Private Sub Back_Click()
     Unload Me
 End Sub
 
+Private Sub DropdownFrom_Change()
+    DropdownFrom.ForeColor = vbBlack
+    DropdownFrom.BackColor = vbWhite
+End Sub
+
+Private Sub Userform_Initialize()
+    For i = Me.DropdownFrom.ListCount - 1 To 0 Step -1
+        Me.DropdownFrom.RemoveItem i
+    Next i
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If ActiveWorkbook.Worksheets(i).name <> "dba_start" Then
+            Me.DropdownFrom.AddItem ActiveWorkbook.Worksheets(i).name
+        End If
+    Next i
+End Sub
+
 Private Sub Querie_Click()
     Dim aux As Boolean
     
     aux = True
     
-    If SelectorInput.Value = "" Or IsNumeric(SelectorInput.Value) Then
+    If DropdownFrom.Value = "" Or IsNumeric(DropdownFrom.Value) Or DropdownFrom.Value = "Choose Table" Then
         aux = False
-        errorOut ("Invalid table name")
+        'errorOut ("Invalid table name")
+        DropdownFrom.Text = "Invalid table name! Select from dropdown!"
+        DropdownFrom.ForeColor = vbWhite
+        DropdownFrom.BackColor = vbRed
+        
+        
+        
     End If
     
     
@@ -49,7 +71,7 @@ Private Sub Querie_Click()
     If aux = True Then
         
         For i = 1 To ActiveWorkbook.Worksheets.Count
-            If SelectorInput.Value = ActiveWorkbook.Worksheets(i).name Then
+            If DropdownFrom.Value = ActiveWorkbook.Worksheets(i).name Then
                 Set currentSheet = ActiveWorkbook.Worksheets(i)
                
                ' Daca prima celula din tabela este goala nu are rost sa cautam
@@ -94,6 +116,3 @@ Private Sub Querie_Click()
     
 End Sub
 
-Private Sub SelectorInput_Change()
-
-End Sub
