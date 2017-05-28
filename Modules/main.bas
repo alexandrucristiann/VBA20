@@ -4,6 +4,7 @@ Option Explicit
 Public Sub main()
 End Sub
 
+
 ' validateColumns
 '
 ' @columns - list of comma separated strings

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CreateTableWindow 
    Caption         =   "Create Table"
-   ClientHeight    =   5715
+   ClientHeight    =   8220
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   14070
@@ -13,6 +13,21 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private Sub Add_Click()
+    Column.BackColor = vbWhite
+    ColumnLabel.ForeColor = vbBlack
+    If Column.Value = "" Or IsNumeric(Column.Value) Then
+        Column.BackColor = vbRed
+        ColumnsLabel.ForeColor = vbRed
+        errorOut ("Invalid column name")
+        Exit Sub
+    End If
+    
+    'add column to listbox
+    Me.Columns.AddItem (Column.Value)
+    Me.Columns.list(Me.Columns.ListCount - 1, 1) = Me.ComboBoxType.Value
+End Sub
+
 Private Sub Back_Click()
     ' Hide the current window
     ' and unload it from memory
@@ -20,46 +35,23 @@ Private Sub Back_Click()
     Unload Me
 End Sub
 
-
-Private Sub ColumnCount_Change()
-    ColumnCount.BackColor = vbWhite
-    ColumnCountLabel.ForeColor = vbBlack
-
-    ' we should also not change the state of the spin
-    ' if the value is not numeric or is not in this interval
-    ' [CoulmnCountSpin.Max, CoulmnCountSpin.Min]
-    If Not IsNumeric(ColumnCount.Value) Or _
-        (ColumnCount.Value > ColumnCountSpin.Max) Or _
-        (ColumnCount.Value < ColumnCountSpin.Min) Then
-        ColumnCount.BackColor = vbRed
-        ColumnCountLabel.ForeColor = vbRed
-        Exit Sub
-    End If
-    
-    ' if the user wants to change the number of columns
-    ' manually we need to update also the ColumnCountSpin
-    ' value as well
-    ColumnCountSpin.Value = ColumnCount.Value
-End Sub
-
-
-Private Sub Columns_Change()
-    Columns.BackColor = vbWhite
-    ColumnsLabel.ForeColor = vbBlack
-    Dim limit As Integer
-    limit = CInt(ColumnCount.Value)
-    If Not validateColumns(Columns.Value, limit) Then
-        Columns.BackColor = vbRed
-        ColumnsLabel.ForeColor = vbRed
+Private Sub Column_Change()
+    Column.BackColor = vbWhite
+    ColumnLabel.ForeColor = vbBlack
+    If Column.Value = "" Or IsNumeric(Column.Value) Then
+        Column.BackColor = vbRed
+        ColumnLabel.ForeColor = vbRed
     End If
 End Sub
 
-Private Sub ColumnCountSpin_Change()
-    ' when we increase or decrease the value
-    ' update it in the field form
-    ColumnCount.Value = ColumnCountSpin.Value
+
+Private Sub Columns_Click()
+
 End Sub
 
+Private Sub ColumnsLabel_Click()
+
+End Sub
 
 ' Create a new table in our database
 ' In our case a table is just a new sheet
@@ -67,10 +59,6 @@ Private Sub Create_Click()
     ' define here the default state
     TableNameLabel.ForeColor = vbBlack
     TableName.BackColor = vbWhite
-    ColumnCountLabel.ForeColor = vbBlack
-    ColumnCount.BackColor = vbWhite
-    Columns.BackColor = vbWhite
-    ColumnsLabel.ForeColor = vbBlack
     
     ' check all fields from the frame before everything else(bae)
     '
@@ -80,26 +68,6 @@ Private Sub Create_Click()
         TableNameLabel.ForeColor = vbRed
         TableName.BackColor = vbRed
         errorOut ("Invalid table name")
-        Exit Sub
-    End If
-    
-    'column count check
-     If Not IsNumeric(ColumnCount.Value) Or _
-        (ColumnCount.Value > ColumnCountSpin.Max) Or _
-        (ColumnCount.Value < ColumnCountSpin.Min) Then
-        ColumnCount.BackColor = vbRed
-        ColumnCountLabel.ForeColor = vbRed
-        errorOut ("Invalid column count, count must be in [1,200]")
-        Exit Sub
-    End If
-    
-    'columns check
-    Dim limit As Integer
-    limit = CInt(ColumnCount.Value)
-    If Not validateColumns(Columns.Value, limit) Then
-        Columns.BackColor = vbRed
-        ColumnsLabel.ForeColor = vbRed
-        errorOut ("Invalid column names,length or found duplicates")
         Exit Sub
     End If
     
@@ -113,13 +81,40 @@ Private Sub Create_Click()
         End If
     Next i
     
-    ' create the table with the given columns
-    Dim arr() As String
-    arr = Split(Columns.Value, ",", limit)
-    CreateTable TableName.Value, limit, arr
+    Dim i As Integer
+    ' create table
+    ' insertion table logic
+    '
+    ' we need first to retain somewhere all types of the columns
+    '
+    Dim currentSheet As Worksheet
+    Dim j As Integer
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If "dba_start" = ActiveWorkbook.Worksheets(i).name Then
+            Set currentSheet = ActiveWorkbook.Worksheets(i)
+                
+            Dim emptyRow As Long
+            emptyRow = currentSheet.Cells(currentSheet.Rows.Count, "A").End(xlUp).Row + 1
+                
+            If currentSheet.Cells(1, "A").Value = "" Then
+                emptyRow = 1
+            End If
+                
+            Dim emptyCol As Long
+            For j = 0 To size - 1
+                currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
+            Next j
+        End If
+    Next i
     
+    'CreateTable TableName.Value, limit, arr
 End Sub
 
+
+
+Private Sub CreateTableFrame_Click()
+
+End Sub
 
 ' On every change in the TableName field
 ' check if we are dealing with valid charachters or not
@@ -134,9 +129,13 @@ Private Sub TableName_Change()
     End If
 End Sub
 
-Private Sub UserForm_Initialize()
-    ' when we open the create table form this initial state
-    ' render the current value from the ColumnCountSpin
-    ' into ColumnCount form field
-    ColumnCount.Value = ColumnCountSpin.Value
+Private Sub Userform_Initialize()
+    ' lock the combo box type
+    Me.ComboBoxType.Style = fmStyleDropDownList
+    For i = Me.ComboBoxType.ListCount - 1 To 0 Step -1
+        Me.ComboBoxType.RemoveItem i
+    Next i
+    ' Add types to chose from when creating a new table
+    Me.ComboBoxType.AddItem ("String")
+    Me.ComboBoxType.AddItem ("Integer")
 End Sub

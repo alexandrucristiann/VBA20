@@ -22,6 +22,9 @@ Private Sub Back_Click()
 End Sub
 
 
+
+
+
 Private Sub Delete_Click()
     If Me.ComboBoxName.Value = "" Then
         errorOut ("No table present in dba")
@@ -55,7 +58,7 @@ End Sub
 
 
 
-Private Sub UserForm_Initialize()
+Private Sub Userform_Initialize()
     For i = Me.ComboBoxName.ListCount - 1 To 0 Step -1
         Me.ComboBoxName.RemoveItem i
     Next i
