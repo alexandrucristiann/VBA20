@@ -4,54 +4,6 @@ Option Explicit
 Public Sub main()
 End Sub
 
-' validateColumns
-'
-' @columns - list of comma separated strings
-' @limit - the numeber of comma separated strings
-'
-' If the specified format is invalid this will return False
-Public Function validateColumns(ByVal Columns As String, ByVal limit As Byte) As Boolean
-    Dim arr() As String
-    Dim size As Byte
-    validateColumns = True
-    
-    If Columns = "" Or limit = 0 Then
-        validateColumns = False
-        Exit Function
-    End If
-    
-    arr = Split(Columns, ",", limit)
-    size = UBound(arr) - LBound(arr) + 1 ' compute the size of the array
-    
-    If size <> limit Or size = 0 Then
-        validateColumns = False
-        Exit Function
-    End If
-    
-    ' In order to "for each" we need this type to be variant
-    ' I know it's weird but heh...
-    Dim a As Variant
-    ' check for aditional blank elements
-    For Each a In arr
-        If a = "" Then
-            validateColumns = False
-            Exit Function
-        End If
-    Next
-    
-    'check if we have duplicates
-    Dim i, j As Integer
-    For i = 0 To UBound(arr) - 1
-        For j = i + 1 To UBound(arr)
-            If arr(i) = arr(j) Then ' we found duplicates
-                validateColumns = False
-                Exit Function
-            End If
-        Next j
-    Next i
-    
-End Function
-
 ' errorOut
 
 ' @message - the error message
@@ -233,9 +185,12 @@ Public Function InsertTable(ByVal TableName As String, ByVal list As String) As 
         Exit Function
     End If
     
+    ' the next step is to get the column types of the @TableName
+    Dim columnTypes() As String
+    GetTableTypes TableName, columnTypes
     
-    Dim currentSheet As Worksheet
     Dim j As Integer
+    Dim currentSheet As Worksheet
     ' insertion table logic
     For i = 1 To ActiveWorkbook.Worksheets.Count
         If TableName = ActiveWorkbook.Worksheets(i).name Then
@@ -250,13 +205,48 @@ Public Function InsertTable(ByVal TableName As String, ByVal list As String) As 
                 
             Dim emptyCol As Long
             For j = 0 To size - 1
-                currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
+                If columnTypes(j) = "Integer" And IsNumeric(arr(j)) Then
+                    currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
+                ElseIf columnTypes(j) = "String" And Not IsNumeric(arr(j)) Then
+                     currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
+                Else
+                    errorOut ("Column value type missmatch")
+                    InsertTable = False
+                    Exit Function
+                End If
             Next j
         End If
     Next i
     
     InsertTable = True
 End Function
+
+Sub GetTableTypes(ByVal TableName As String, ByRef columnTypes() As String)
+    Dim dba_start As Worksheet
+    Set dba_start = ActiveWorkbook.Worksheets("dba_start")
+    Dim rw As Range
+    Dim j As Integer
+    j = 2
+    Dim ncolumns As Long
+    ncolumns = 0
+    ReDim Preserve columnTypes(ncolumns)
+    For Each rw In dba_start.Rows
+        ' if we found the raw for the @TableName
+        ' we need to take all types
+        If dba_start.Cells(rw.Row, 1).Value = TableName Then
+            ' for every non empty cell
+            Do While dba_start.Cells(rw.Row, j) <> ""
+                ReDim Preserve columnTypes(0 To ncolumns)
+                columnTypes(ncolumns) = dba_start.Cells(rw.Row, j).Value ' get the type
+                j = j + 1
+                ncolumns = ncolumns + 1
+            Loop
+            ' after we've done with the type extraction just exit
+            Exit For
+        End If
+    Next rw
+End Sub
+
 
 
 

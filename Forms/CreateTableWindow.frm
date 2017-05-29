@@ -45,14 +45,6 @@ Private Sub Column_Change()
 End Sub
 
 
-Private Sub Columns_Click()
-
-End Sub
-
-Private Sub ColumnsLabel_Click()
-
-End Sub
-
 ' Create a new table in our database
 ' In our case a table is just a new sheet
 Private Sub Create_Click()
@@ -87,7 +79,7 @@ Private Sub Create_Click()
     Dim ncolumns As Long
     ncolumns = 0
     ReDim Preserve columnTypes(ncolumns)
-
+    ReDim Preserve columnNames(ncolumns)
     For i = 0 To Columns.ListCount - 1
         ReDim Preserve columnTypes(0 To ncolumns)
         ReDim Preserve columnNames(0 To ncolumns)
@@ -104,7 +96,7 @@ Private Sub Create_Click()
     Set dba_start = ActiveWorkbook.Worksheets("dba_start")
     
     Dim emptyRow As Long
-    emptyRow = dba_start.Cells(dba_start.Rows.Count, "A").End(xlUp).Row + 1
+    emptyRow = dba_start.Cells(dba_start.Rows.Count, "A").End(xlUp).Row + 1 ' get the last raw that is empty
     If dba_start.Cells(1, "A").Value = "" Then
         emptyRow = 1
     End If
@@ -115,6 +107,9 @@ Private Sub Create_Click()
     Next i
     
     CreateTable TableName.Value, columnNames
+    
+    Me.Hide
+    Unload Me
 End Sub
 
 

@@ -20,7 +20,6 @@ Private Sub Back_Click()
     Unload Me
 End Sub
 
-
 Private Sub Insert_Click()
     ' check if table name is valid
     If TableName.Value = "" Or IsNumeric(TableName.Value) Then
@@ -94,5 +93,4 @@ Private Sub Values_Change()
         TableName.BackColor = vbRed
         Exit Sub
     End If
-
 End Sub

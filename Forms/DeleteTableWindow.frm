@@ -38,6 +38,19 @@ Private Sub Delete_Click()
         Exit Sub
     End If
     
+    
+    ' find raw that belongs to the table we want to delete
+    ' and be sure to delete the types also
+    Dim dba_start As Worksheet
+    Set dba_start = ActiveWorkbook.Worksheets("dba_start")
+    Dim rw As Range
+    For Each rw In dba_start.Rows
+        If dba_start.Cells(rw.Row, 1).Value = Me.ComboBoxName.Value Then
+            dba_start.Cells(rw.Row, 1).EntireRow.Delete
+            Exit For
+        End If
+    Next rw
+    
     Me.Hide
     Unload Me
 End Sub
