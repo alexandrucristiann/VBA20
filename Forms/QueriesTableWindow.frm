@@ -286,8 +286,17 @@ Private Sub Querie_Click()
                 resultString = resultString & " "
             Next j
             
-            MsgBox (resultString)
+            If DeleteCheckbox.Value = False Then
+                
+                MsgBox (resultString)
             
+                Else
+                
+                For ii = 1 To emptyCell - 1
+                    currentSheet.Cells(result(i), ii).Value = ""
+                Next ii
+            
+            End If
         Next i
     
         
