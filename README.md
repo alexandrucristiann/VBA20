@@ -18,6 +18,8 @@
 
 
 
+![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/menu.png)
+
 Sistemul care simuleaza o baza de date implementat dispune de o interfata. Ca punct de intrare in interfata va avea un button localizat in foaia dba_start.
 Acest buton va lansa menium principal, prin care utilizatorul poate executa diferite operatiuni asupra Workbook-ului curent.
 
@@ -81,6 +83,8 @@ End Sub
 
 ```
 
+![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/create.png)
+
 
 > Pentru fiecare tabel, datele vor fi retinute intr-o foaie de lucru separata.
 
@@ -116,6 +120,9 @@ End Sub
 > Stergerea unui tabel, ales dintr-o lista a tabelelor existente.
 
 Prin selectarea din lista tabelelor curente si prin apasarea butonului de delete se va sterge tabelul(worksheet-ul) cat si alte date importante care s-au scris atunci cand tabelul s-a creat.
+
+
+![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/delete.png)
 
 
 ```vbnet
@@ -162,6 +169,10 @@ Application.DisplayAlerts = True ' re enable events'
 # Inserarea datelor
 
 > Inserarea unei linii intr-un tabel, cu indicarea valorilor campurilor.
+
+
+![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/insert.png)
+
 
 Inserarea nu este valida atunci cand vrem sa inseram o valoare de un type diferit fata de cel declarat a coloanei sub care vrem sa inseram.
 Fiecare type a fiecarei coloane dinttr-un tabel sunt memorate in worksheet-ul dba_start atunci cand tabelul este creat.
