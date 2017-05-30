@@ -157,6 +157,24 @@ Private Sub Querie_Click()
     Dim resultLen As Integer
     Dim deScosLen As Integer
     
+    Set dict = CreateObject("Scripting.Dictionary")
+    
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If DropdownFrom.Value = ActiveWorkbook.Worksheets(i).name Then
+            Set currentSheet = ActiveWorkbook.Worksheets(i)
+        End If
+    Next i
+    
+    emptyCell = 1
+    Do While currentSheet.Cells(1, emptyCell).Value <> ""
+        emptyCell = emptyCell + 1
+    Loop
+    
+    For i = 1 To emptyCell - 1
+        dict.Add currentSheet.Cells(1, i).Value, i
+    Next i
+    
+    
     resultLen = 0
     deScosLen = 0
     
@@ -170,8 +188,8 @@ Private Sub Querie_Click()
                 
                 emptyRow = currentSheet.Cells(currentSheet.Rows.Count, "A").End(xlUp).Row + 1
                
-                If currentSheet.Cells(1, "A").Value = "" Then
-                    emptyRow = 1
+                If currentSheet.Cells(2, "A").Value = "" Then
+                    emptyRow = 2
                     MsgBox ("Tabela este goala! Nu a fost fasit nici un rezultat!")
                 End If
                 
@@ -188,8 +206,24 @@ Private Sub Querie_Click()
                     rulesValues(k) = Replace(rulesValues(k), " ", "")
                     auxArray = Split(rulesValues(k), delimitator, 1000)
                     
+                    emptyCell = 1
                     
-                    For l = 1 To emptyRow - 1
+                    Do While currentSheet.Cells(1, emptyCell).Value <> ""
+                        emptyCell = emptyCell + 1
+                    Loop
+                    
+                    For ii = 1 To emptyCell - 1
+                        
+                        If currentSheet.Cells(1, ii).Value = auxArray(0) Then
+                            
+                            auxArray(0) = ii
+                            
+                        End If
+                        
+                    Next ii
+                    
+                    
+                    For l = 2 To emptyRow - 1
                         'Merg pana la gasesc celula goala
                         'Debug -- MsgBox (currentSheet.Cells(l, auxArray(0)).Value)
                         
@@ -200,8 +234,7 @@ Private Sub Querie_Click()
                             toBeComparedWith = currentSheet.Cells(l, auxArray(1)).Value
                         End If
                         
-                          
-                        If computeByDelim(currentSheet.Cells(l, auxArray(0)).Value, toBeComparedWith, delimitator) Then
+                        If computeByDelim(currentSheet.Cells(l, CInt(auxArray(0))).Value, toBeComparedWith, delimitator) Then
                             
                             
                             If Not isInArray(result, l) Then
@@ -249,7 +282,7 @@ Private Sub Querie_Click()
             resultString = ""
             
             For j = 0 To size - 1
-                resultString = resultString & currentSheet.Cells(result(i), selectedValues(j)).Value
+                resultString = resultString & currentSheet.Cells(result(i), dict(selectedValues(j))).Value
                 resultString = resultString & " "
             Next j
             
