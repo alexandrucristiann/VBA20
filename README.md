@@ -193,7 +193,7 @@ End Function
 
 ```
 
-Fiecare inserarea va verifica si valida type-ul daca este la fel cu cel declarat pentru coloana respectiva. Daca valorile nu coincid atunci vom informa userul de *type mismatch*.
+Fiecare inserarea va verifica si valida type-ul daca este la fel cu cel declarat pentru coloana respectiva. Daca valorile nu coincid atunci vom informa userul de **type mismatch**.
 
 Parcurgem vba_start si extragem type-urile in ordinea gasit a coloanelor
 
@@ -217,9 +217,9 @@ Next rw
 ```
 
 
-Toate valorile se vor da despartite prin token-ul ```,```. Pentru fiecare cell in parte insertam dupa ultim-ul row non-empty pe care o gasim
+Toate valorile se vor da despartite prin token-ul ```,```. Pentru fiecare cell in parte insertam dupa ultimul row non-empty pe care o gasim
 ``` emptyRow = currentSheet.Cells(currentSheet.Rows.Count, "A").End(xlUp).Row + 1 ```.
-Atata timp cat type-urile coincid vom insera ``` currentSheet.Cells(emptyRow, j + 1).Value = arr(j)```. Daca type-urile nu coincid, vom iesi din functie si vom afisa catre user un warning pop up cu mesajul "Column values type mismatch".
+Atata timp cat type-urile coincid vom insera ``` currentSheet.Cells(emptyRow, j + 1).Value = arr(j)```. Daca type-urile nu coincid, vom iesi din functie si vom afisa catre user un warning pop up cu mesajul **Column values type mismatch**.
 
 
 ```vbnet
