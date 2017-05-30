@@ -146,3 +146,100 @@ Private Sub Delete_Click()
     Me.Hide
     Unload Me
 End Sub
+```
+
+
+
+
+La apelarea functiei ```DeleteTable```, atunci cand tabelul se va sterge, normal in excel va aparea un pop up cu intrebarea daca cu adevarat vrem sa stergem worksheet-ul, dar cum nu vrem sa apara mereu acel pop up, vom da disable la astfel de event-uri prin liniile
+
+```vbnet
+Application.DisplayAlerts = False ' disable events'
+Application.DisplayAlerts = True ' re enable events'
+```
+
+
+# Inserarea datelor
+
+> Inserarea unei linii intr-un tabel, cu indicarea valorilor campurilor.
+
+Inserarea nu este valida atunci cand vrem sa inseram o valoare de un type diferit fata de cel declarat a coloanei sub care vrem sa inseram.
+Fiecare type a fiecarei coloane dinttr-un tabel sunt memorate in worksheet-ul dba_start atunci cand tabelul este creat.
+
+```vbnet
+
+' InsertTable
+'
+' @list - list of values to be inserted
+' @table - the table in which the values will be inserted
+'
+' If the list values does not match the column count of the tables this will return False
+' If any operation will fail this will return false
+' If the values are inserted and everything went fine, this will return True
+Public Function InsertTable(ByVal TableName As String, ByVal list As String) As Boolean
+'code
+End Function
+
+```
+
+Fiecare inserarea va verifica si valida type-ul daca este la fel cu cel declarat pentru coloana respectiva. Daca valorile nu coincid atunci vom informa userul de *type mismatch*.
+
+Parcurgem vba_start si extragem type-urile in ordinea gasit a coloanelor
+
+```vbnet
+  For Each rw In dba_start.Rows
+        ' if we found the raw for the @TableName
+        ' we need to take all types
+        If dba_start.Cells(rw.Row, 1).Value = TableName Then
+            ' for every non empty cell
+            Do While dba_start.Cells(rw.Row, j) <> ""
+                ReDim Preserve columnTypes(0 To ncolumns)
+                columnTypes(ncolumns) = dba_start.Cells(rw.Row, j).Value ' get the type
+                j = j + 1
+                ncolumns = ncolumns + 1
+            Loop
+            ' after we've done with the type extraction just exit
+            Exit For
+        End If
+Next rw
+
+```
+
+
+Toate valorile se vor da despartite prin token-ul ```,```. Pentru fiecare cell in parte insertam dupa ultim-ul row non-empty pe care o gasim
+``` emptyRow = currentSheet.Cells(currentSheet.Rows.Count, "A").End(xlUp).Row + 1 ```.
+Atata timp cat type-urile coincid vom insera ``` currentSheet.Cells(emptyRow, j + 1).Value = arr(j)```. Daca type-urile nu coincid, vom iesi din functie si vom afisa catre user un warning pop up cu mesajul "Column values type mismatch".
+
+
+```vbnet
+
+    Dim j As Integer
+    Dim currentSheet As Worksheet
+    ' insertion table logic
+    For i = 1 To ActiveWorkbook.Worksheets.Count
+        If TableName = ActiveWorkbook.Worksheets(i).name Then
+            Set currentSheet = ActiveWorkbook.Worksheets(i)
+                
+            Dim emptyRow As Long
+            emptyRow = currentSheet.Cells(currentSheet.Rows.Count, "A").End(xlUp).Row + 1
+                
+            If currentSheet.Cells(1, "A").Value = "" Then
+                emptyRow = 1
+            End If
+                
+            Dim emptyCol As Long
+            For j = 0 To size - 1
+                If columnTypes(j) = "Integer" And IsNumeric(arr(j)) Then
+                    currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
+                ElseIf columnTypes(j) = "String" And Not IsNumeric(arr(j)) Then
+                     currentSheet.Cells(emptyRow, j + 1).Value = arr(j)
+                Else
+                    errorOut ("Column value type mismatch")
+                    InsertTable = False
+                    Exit Function
+                End If
+            Next j
+        End If
+    Next i
+
+```
