@@ -25,6 +25,10 @@ Private Sub DropdownFrom_Change()
     DropdownFrom.BackColor = vbWhite
 End Sub
 
+Private Sub Frame1_Click()
+
+End Sub
+
 Private Sub Userform_Initialize()
     For i = Me.DropdownFrom.ListCount - 1 To 0 Step -1
         Me.DropdownFrom.RemoveItem i
@@ -104,36 +108,18 @@ Private Function isInArray(ByRef arr() As Integer, ByVal x As Integer) As Boolea
     
 End Function
 
-Private Function removeFromArray(ByRef arr() As Integer, ByVal toRemove As Integer)
-    
-    sizeOfArray = UBound(arr, 1) - LBound(arr, 1)
-    
-    isInArray = False
-    For i = 0 To sizeOfArray
-        If arr(i) = toRemove Then
-            For j = i + 1 To sizeOfArray
-                arr(j - 1) = arr(j)
-            End If
-        End If
-    Next i
-    
-    ReDim Preserve prLst(Len(arr) - 1)
-    
-End Function
-
 Private Sub Querie_Click()
     Dim aux As Boolean
     
     aux = True
     
     If DropdownFrom.Value = "" Or IsNumeric(DropdownFrom.Value) Or DropdownFrom.Value = "Choose Table" Then
+        
         aux = False
         'errorOut ("Invalid table name")
         DropdownFrom.Text = "Invalid table name! Select from dropdown!"
         DropdownFrom.ForeColor = vbWhite
         DropdownFrom.BackColor = vbRed
-        
-        
         
     End If
     
@@ -166,9 +152,13 @@ Private Sub Querie_Click()
     size = UBound(selectedValues) - LBound(selectedValues) + 1
     
     Dim result(1000) As Integer
+    Dim deScos(1000) As Integer
+    
     Dim resultLen As Integer
+    Dim deScosLen As Integer
     
     resultLen = 0
+    deScosLen = 0
     
     If aux = True Then
         
@@ -213,10 +203,21 @@ Private Sub Querie_Click()
                           
                         If computeByDelim(currentSheet.Cells(l, auxArray(0)).Value, toBeComparedWith, delimitator) Then
                             
-                            result(resultLen) = l
-                            resultLen = resultLen + 1
+                            
+                            If Not isInArray(result, l) Then
+                                result(resultLen) = l
+                                resultLen = resultLen + 1
+                            End If
                             
                             
+                            Else
+                                If isInArray(result, l) = True And isAnd = True Then
+                                    
+                                    deScos(deScosLen) = l
+                                    deScosLen = deScosLen + 1
+                                
+                                End If
+                                
                         End If
                     Next l
                     
@@ -226,21 +227,38 @@ Private Sub Querie_Click()
         Next i
         
         
+        For l = 0 To deScosLen - 1
+            For ii = 0 To resultLen - 1
+                If result(ii) = deScos(l) Then
+                    For jj = ii + 1 To resultLen - 1
+                        result(jj - 1) = result(jj)
+                    Next jj
+                    
+                End If
+            Next ii
+            resultLen = resultLen - 1
+        Next l
+        
+        
+        
         Dim resultString As String
         Dim sizeOfLineArray As Integer
-        resultString = ""
+        
         For i = 0 To resultLen - 1
+            
+            resultString = ""
             
             For j = 0 To size - 1
                 resultString = resultString & currentSheet.Cells(result(i), selectedValues(j)).Value
                 resultString = resultString & " "
             Next j
+            
+            MsgBox (resultString)
+            
         Next i
-        
-         MsgBox (resultString)
+    
         
     End If
     
     
 End Sub
-
