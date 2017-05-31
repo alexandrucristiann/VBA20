@@ -83,7 +83,7 @@ End Sub
 
 ```
 
-![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/create.png)
+![create](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/create.png)
 
 
 > Pentru fiecare tabel, datele vor fi retinute intr-o foaie de lucru separata.
@@ -122,7 +122,7 @@ End Sub
 Prin selectarea din lista tabelelor curente si prin apasarea butonului de delete se va sterge tabelul(worksheet-ul) cat si alte date importante care s-au scris atunci cand tabelul s-a creat.
 
 
-![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/delete.png)
+![delete](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/delete.png)
 
 
 ```vbnet
@@ -171,7 +171,7 @@ Application.DisplayAlerts = True ' re enable events'
 > Inserarea unei linii intr-un tabel, cu indicarea valorilor campurilor.
 
 
-![menu](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/insert.png)
+![insert](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/insert.png)
 
 
 Inserarea nu este valida atunci cand vrem sa inseram o valoare de un type diferit fata de cel declarat a coloanei sub care vrem sa inseram.
@@ -254,3 +254,77 @@ Atata timp cat type-urile coincid vom insera ``` currentSheet.Cells(emptyRow, j 
     Next i
 
 ```
+
+
+# Realizarea de interogari asupra tabelelor
+
+> O interogare poate returna unul sau mai multe campuri deja existente dintr-un tabel, dar nu si expresii mai complexe.
+La precizarea clauzei WHERE, conditiile sunt operatorii relationali standard pentru numere si siruri de caractere (==, !=, <, >, <=, >=), aplicati fie intre campuri, fie intre campuri si valori constante.
+Pot fi indicate conditii logice multiple, legate prin AND sau OR, dar nu se pot folosi ambele functii booleene in aceeasi interogare.
+In clauza WHERE se poate face referire si la campuri din alte tabele. Utilizatorul va putea alege din liste care contin tabelele existente si respectiv campurile tabelului indicat. 
+
+
+![qury-logic](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/queryLogic.png)
+
+```vbnet
+For l = 2 To emptyRow - 1
+    'Merg pana la gasesc celula goala
+    'Debug -- MsgBox (currentSheet.Cells(l, auxArray(0)).Value)
+
+    Dim toBeComparedWith As String
+    If InStr(1, auxArray(1), "'") > 0 Then
+        toBeComparedWith = Replace(auxArray(1), "'", "")
+    Else
+        toBeComparedWith = currentSheet.Cells(l, auxArray(1)).Value
+    End If
+
+    If computeByDelim(currentSheet.Cells(l, CInt(auxArray(0))).Value, toBeComparedWith, delimitator) Then
+        If Not isInArray(result, l) Then
+            result(resultLen) = l
+            resultLen = resultLen + 1
+        End If
+    Else
+        If isInArray(result, l) = True And isAnd = True Then       
+            deScos(deScosLen) = l
+            deScosLen = deScosLen + 1
+        End If
+    End If
+Next l
+```
+
+### Exemplu de output la interogari
+
+![qury-output](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/queryOutput.png)
+
+
+# Stergerea unei linii cu ajutorul clauzei WHERE
+
+
+> Stergerea uneia sau mai multor linii dintr-un tabel. Clauza WHERE se supune acelorasi conditii ca in cazul interogarilor.
+
+```vbnet
+    For i = 0 To resultLen - 1
+            
+            resultString = ""
+            
+            For j = 0 To size - 1
+                resultString = resultString & currentSheet.Cells(result(i), dict(selectedValues(j))).Value
+                resultString = resultString & " "
+            Next j
+            
+            If DeleteCheckbox.Value = False Then
+                
+                MsgBox (resultString)
+            
+                Else
+                
+                For ii = 1 To emptyCell - 1
+                    currentSheet.Cells(result(i), ii).Value = ""
+                Next ii
+            
+            End If
+        Next i
+
+```
+
+![delete-row](https://raw.githubusercontent.com/kriszt/VBA20/master/Doc/deleteRow.png)
