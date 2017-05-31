@@ -302,5 +302,8 @@ Private Sub Querie_Click()
         
     End If
     
+    Me.Hide
+    Unload Me
+    
     
 End Sub
